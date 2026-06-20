@@ -3,6 +3,7 @@ const cors = require("cors");
 const pool = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
+const schedulerRoutes = require("./routes/schedulerRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -11,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
-
+app.use("/api/scheduler", schedulerRoutes);
 app.get("/", (req, res) => {
   res.json({
     message: "SchedAI Backend Running 🚀"
