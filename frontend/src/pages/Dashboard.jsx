@@ -11,11 +11,9 @@ function Dashboard() {
   const [schedule, setSchedule] = useState([]);
 
   const totalTasks = tasks.length;
-
   const highPriorityTasks = tasks.filter(
     (task) => task.priority === "High"
   ).length;
-
   const completedTasks = tasks.filter(
     (task) => task.status === "completed"
   ).length;
@@ -55,8 +53,6 @@ function Dashboard() {
         }
       );
 
-      alert("Task Created Successfully!");
-
       setTitle("");
       setDescription("");
       setPriority("Medium");
@@ -64,6 +60,7 @@ function Dashboard() {
 
       fetchTasks();
 
+      alert("Task Created Successfully!");
     } catch (error) {
       console.error(error);
       alert("Error creating task");
@@ -87,7 +84,6 @@ function Dashboard() {
       setSchedule(response.data.schedule);
 
       alert("Schedule Generated!");
-
     } catch (error) {
       console.error(error);
       alert("Error generating schedule");
@@ -102,28 +98,54 @@ function Dashboard() {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #0f172a, #1e293b)",
-        padding: "30px",
-        fontFamily: "Arial, sans-serif"
+        background: "#0f172a",
+        color: "white",
+        display: "flex",
+        fontFamily: "Inter, Arial, sans-serif"
       }}
     >
+      {/* Sidebar */}
       <div
         style={{
-          maxWidth: "1200px",
-          margin: "0 auto"
+          width: "250px",
+          background: "#111827",
+          padding: "30px",
+          borderRight: "1px solid #1f2937"
         }}
       >
         <h1
           style={{
-            textAlign: "center",
-            color: "white",
-            fontSize: "3rem",
-            marginBottom: "30px"
+            fontSize: "28px",
+            marginBottom: "40px"
           }}
         >
           🚀 SchedAI
         </h1>
 
+        <div style={{ lineHeight: "3" }}>
+          <div>📊 Dashboard</div>
+          <div>📝 Tasks</div>
+          <div>⚡ Schedule</div>
+          <div>⚙️ Settings</div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div
+        style={{
+          flex: 1,
+          padding: "30px"
+        }}
+      >
+        <h1
+          style={{
+            marginBottom: "25px"
+          }}
+        >
+          Welcome Back 👋
+        </h1>
+
+        {/* Stats */}
         <div
           style={{
             display: "grid",
@@ -135,9 +157,8 @@ function Dashboard() {
           <div
             style={{
               background: "#1e293b",
-              color: "white",
               padding: "20px",
-              borderRadius: "12px"
+              borderRadius: "15px"
             }}
           >
             <h2>{totalTasks}</h2>
@@ -147,9 +168,8 @@ function Dashboard() {
           <div
             style={{
               background: "#1e293b",
-              color: "white",
               padding: "20px",
-              borderRadius: "12px"
+              borderRadius: "15px"
             }}
           >
             <h2>{highPriorityTasks}</h2>
@@ -159,9 +179,8 @@ function Dashboard() {
           <div
             style={{
               background: "#1e293b",
-              color: "white",
               padding: "20px",
-              borderRadius: "12px"
+              borderRadius: "15px"
             }}
           >
             <h2>{completedTasks}</h2>
@@ -169,10 +188,10 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* Create Task */}
         <div
           style={{
-            backgroundColor: "#1e293b",
-            color: "white",
+            background: "#1e293b",
             padding: "25px",
             borderRadius: "15px",
             marginBottom: "30px"
@@ -185,15 +204,7 @@ function Dashboard() {
             placeholder="Task Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginBottom: "10px",
-              borderRadius: "8px",
-              backgroundColor: "#334155",
-              color: "white",
-              border: "1px solid #475569"
-            }}
+            style={inputStyle}
           />
 
           <input
@@ -201,29 +212,13 @@ function Dashboard() {
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginBottom: "10px",
-              borderRadius: "8px",
-              backgroundColor: "#334155",
-              color: "white",
-              border: "1px solid #475569"
-            }}
+            style={inputStyle}
           />
 
           <select
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginBottom: "10px",
-              borderRadius: "8px",
-              backgroundColor: "#334155",
-              color: "white",
-              border: "1px solid #475569"
-            }}
+            style={inputStyle}
           >
             <option>High</option>
             <option>Medium</option>
@@ -235,27 +230,14 @@ function Dashboard() {
             placeholder="Duration (minutes)"
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginBottom: "15px",
-              borderRadius: "8px",
-              backgroundColor: "#334155",
-              color: "white",
-              border: "1px solid #475569"
-            }}
+            style={inputStyle}
           />
 
           <button
             onClick={createTask}
             style={{
-              padding: "12px 20px",
-              backgroundColor: "#3b82f6",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              marginRight: "10px"
+              ...buttonStyle,
+              background: "#2563eb"
             }}
           >
             Create Task
@@ -264,90 +246,125 @@ function Dashboard() {
           <button
             onClick={generateSchedule}
             style={{
-              padding: "12px 20px",
-              backgroundColor: "#10b981",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer"
+              ...buttonStyle,
+              background: "#10b981",
+              marginLeft: "10px"
             }}
           >
             Generate Schedule
           </button>
         </div>
 
-        <h2 style={{ color: "white" }}>Your Tasks</h2>
+        {/* Two Column Layout */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "25px"
+          }}
+        >
+          {/* Tasks */}
+          <div>
+            <h2>Your Tasks</h2>
 
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            style={{
-              backgroundColor: "#1e293b",
-              color: "white",
-              padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "12px"
-            }}
-          >
-            <h3>{task.title}</h3>
-
-            <p>{task.description}</p>
-
-            <p>
-              Priority:
-              <span
+            {tasks.map((task) => (
+              <div
+                key={task.id}
                 style={{
-                  marginLeft: "5px",
-                  fontWeight: "bold",
-                  color:
-                    task.priority === "High"
-                      ? "#ef4444"
-                      : task.priority === "Medium"
-                      ? "#f59e0b"
-                      : "#22c55e"
+                  background: "#1e293b",
+                  padding: "15px",
+                  borderRadius: "12px",
+                  marginBottom: "15px"
                 }}
               >
-                {task.priority}
-              </span>
-            </p>
+                <h3>{task.title}</h3>
 
-            <p>
-              Duration: {task.estimated_duration} mins
-            </p>
+                <p>{task.description}</p>
+
+                <p>
+                  Priority:
+                  <span
+                    style={{
+                      marginLeft: "8px",
+                      fontWeight: "bold",
+                      color:
+                        task.priority === "High"
+                          ? "#ef4444"
+                          : task.priority === "Medium"
+                          ? "#f59e0b"
+                          : "#22c55e"
+                    }}
+                  >
+                    {task.priority}
+                  </span>
+                </p>
+
+                <p>
+                  Duration: {task.estimated_duration} mins
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
 
-        <h2 style={{ color: "white", marginTop: "30px" }}>
-          Generated Schedule
-        </h2>
+          {/* Schedule */}
+          <div>
+            <h2>Generated Schedule</h2>
 
-        {schedule.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              backgroundColor: "#064e3b",
-              color: "white",
-              padding: "15px",
-              marginBottom: "15px",
-              borderRadius: "12px"
-            }}
-          >
-            <h3>{item.title}</h3>
+            {schedule.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  background: "#064e3b",
+                  padding: "15px",
+                  borderRadius: "12px",
+                  marginBottom: "15px"
+                }}
+              >
+                <h3>{item.title}</h3>
 
-            <p>
-              Start:{" "}
-              {new Date(item.scheduled_start).toLocaleString()}
-            </p>
+                <p>
+                  Start:
+                  {" "}
+                  {new Date(
+                    item.scheduled_start
+                  ).toLocaleString()}
+                </p>
 
-            <p>
-              End:{" "}
-              {new Date(item.scheduled_end).toLocaleString()}
-            </p>
+                <p>
+                  End:
+                  {" "}
+                  {new Date(
+                    item.scheduled_end
+                  ).toLocaleString()}
+                </p>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  padding: "12px",
+  marginTop: "10px",
+  marginBottom: "10px",
+  borderRadius: "8px",
+  border: "1px solid #374151",
+  background: "#334155",
+  color: "white",
+  boxSizing: "border-box"
+};
+
+const buttonStyle = {
+  padding: "12px 20px",
+  border: "none",
+  borderRadius: "8px",
+  color: "white",
+  cursor: "pointer",
+  fontWeight: "bold"
+};
 
 export default Dashboard;
