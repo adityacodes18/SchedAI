@@ -66,7 +66,62 @@ function Dashboard() {
       alert("Error creating task");
     }
   };
+  const deleteTask = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
 
+    await api.delete(`/tasks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    fetchTasks();
+
+    alert("Task Deleted Successfully!");
+
+  } catch (error) {
+    console.error(error);
+    alert("Error deleting task");
+  }
+};
+const markComplete = async (task) => {
+  try {
+    console.log("Clicked Complete", task);
+
+    const token = localStorage.getItem("token");
+
+    const response = await api.put(
+      `/tasks/${task.id}`,
+      {
+        title: task.title,
+        description: task.description,
+        priority: task.priority,
+        status: "completed",
+        estimated_duration: task.estimated_duration
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    console.log(response.data);
+
+    alert("Task Completed!");
+
+    fetchTasks();
+
+  } catch (error) {
+    console.error(error);
+
+    alert(
+      error.response?.data?.message ||
+      "Error updating task"
+    );
+  }
+};
   const generateSchedule = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -80,7 +135,7 @@ function Dashboard() {
           }
         }
       );
-
+      
       setSchedule(response.data.schedule);
 
       alert("Schedule Generated!");
@@ -269,15 +324,31 @@ function Dashboard() {
 
             {tasks.map((task) => (
               <div
-                key={task.id}
-                style={{
-                  background: "#1e293b",
-                  padding: "15px",
-                  borderRadius: "12px",
-                  marginBottom: "15px"
-                }}
-              >
-                <h3>{task.title}</h3>
+  key={task.id}
+  style={{
+    background:
+      task.status === "completed"
+        ? "#14532d"
+        : "#1e293b",
+    padding: "15px",
+    borderRadius: "12px",
+    marginBottom: "15px",
+    opacity:
+      task.status === "completed"
+        ? 0.8
+        : 1
+  }}
+>
+                <h3
+  style={{
+    textDecoration:
+      task.status === "completed"
+        ? "line-through"
+        : "none"
+  }}
+>
+  {task.title}
+</h3>
 
                 <p>{task.description}</p>
 
@@ -302,6 +373,37 @@ function Dashboard() {
                 <p>
                   Duration: {task.estimated_duration} mins
                 </p>
+                <button
+  onClick={() => deleteTask(task.id)}
+  style={{
+    background: "#ef4444",
+    color: "white",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer"
+  }}
+>
+  Delete Task
+</button>
+<button
+
+  onClick={() => markComplete(task)}
+  style={{
+    background: "#22c55e",
+    color: "white",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    marginLeft: "10px"
+  }}
+>
+
+  
+
+  Complete
+</button>
               </div>
             ))}
           </div>
@@ -312,32 +414,33 @@ function Dashboard() {
 
             {schedule.map((item) => (
               <div
-                key={item.id}
-                style={{
-                  background: "#064e3b",
-                  padding: "15px",
-                  borderRadius: "12px",
-                  marginBottom: "15px"
-                }}
-              >
-                <h3>{item.title}</h3>
+  key={item.id}
+  style={{
+    background: "#064e3b",
+    padding: "15px",
+    borderRadius: "12px",
+    marginBottom: "15px",
+    borderLeft: "5px solid #22c55e"
+  }}
+>
+  <h3>{item.title}</h3>
 
-                <p>
-                  Start:
-                  {" "}
-                  {new Date(
-                    item.scheduled_start
-                  ).toLocaleString()}
-                </p>
+  <p>
+    🕘 Start:
+    {" "}
+    {new Date(
+      item.scheduled_start
+    ).toLocaleString()}
+  </p>
 
-                <p>
-                  End:
-                  {" "}
-                  {new Date(
-                    item.scheduled_end
-                  ).toLocaleString()}
-                </p>
-              </div>
+  <p>
+    🕓 End:
+    {" "}
+    {new Date(
+      item.scheduled_end
+    ).toLocaleString()}
+  </p>
+</div>
             ))}
           </div>
         </div>
